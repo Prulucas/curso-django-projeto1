@@ -15,3 +15,12 @@ class RecipeViewsTest(TestCase):
     def test_recipe_detail_view_function_is_correct(self):
         view = resolve(reverse('recipes:recipe', kwargs={'id': 1}))
         self.assertIs(view.func, views.recipe)
+
+    def test_recipe_home_view_returns_status_code_200_OK(self):
+        # reverse é a função que nos  permite adicionar uma url dinamicamente
+        response = self.client.get(reverse('recipes:home'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_recipe_home_loads_correct_template(self):
+        response = self.client.get(reverse('recipes:home'))
+        self.assertTemplateUsed(response, 'recipes/pages/home.html')
