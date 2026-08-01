@@ -1,7 +1,6 @@
-from django.test import TestCase
 from django.urls import reverse, resolve
 from recipes import views
-from recipes.models import Category, Recipe, User
+from unittest import skip
 from .test_recipe_base import RecipeTestBase
 
 
@@ -20,10 +19,16 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(reverse('recipes:home'))
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
+    @skip('Pulando testes de propósito para aprender sobre a decoração com skip WIP')
     def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
         response = self.client.get(reverse('recipes:home'))
         # Função decode converte bytes em uma string
         self.assertIn('No recipes found', response.content.decode('utf-8'))
+
+        # Preciso escrever mais coisas nesse teste
+        self.fail('Para que eu termine de escrever o teste')
+
+        # WIP - Work In Progress
 
     def test_recipe_home_template_loads_recipe(self):
         self.make_recipe()
