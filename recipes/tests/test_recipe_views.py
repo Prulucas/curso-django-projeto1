@@ -19,14 +19,14 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(reverse('recipes:home'))
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
-    @skip('Pulando testes de propósito para aprender sobre a decoração com skip WIP')
+    # @skip('Pulando testes de propósito para aprender sobre a decoração com skip WIP')
     def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
         response = self.client.get(reverse('recipes:home'))
         # Função decode converte bytes em uma string
         self.assertIn('No recipes found', response.content.decode('utf-8'))
 
         # Preciso escrever mais coisas nesse teste
-        self.fail('Para que eu termine de escrever o teste')
+        # self.fail('Para que eu termine de escrever o teste')
 
         # WIP - Work In Progress
 
@@ -49,6 +49,15 @@ class RecipeViewsTest(RecipeTestBase):
         )
         self.assertEqual(response.status_code, 404)
 
+    def test_recipe_category_template_loads_recipe(self):
+        needed_title = 'This is a category test'
+        # Need a Recipe to test
+        self.make_recipe(title=needed_title)
+        response = self.client.get(reverse('recipes:category', args=(1,)))
+
+        content = response.content.decode('utf-8')  # testar o template
+        self.assertIn(needed_title, content)
+
     def test_recipe_detail_view_function_is_correct(self):
         view = resolve(reverse('recipes:recipe', kwargs={'id': 1}))
         self.assertIs(view.func, views.recipe)
@@ -58,3 +67,14 @@ class RecipeViewsTest(RecipeTestBase):
             reverse('recipes:recipe', kwargs={'id': 100})
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_recipe_detail_template_loads_the_correct_recipe(self):
+        needed_title = 'This is a detail page - It load one recipe'
+        # Need a Recipe to test
+        self.make_recipe(title=needed_title)
+        response = self.client.get(reverse('recipes:recipe', kwargs={
+            'id': 1,
+        }))
+
+        content = response.content.decode('utf-8')  # testar o template
+        self.assertIn(needed_title, content)
