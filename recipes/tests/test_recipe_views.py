@@ -1,6 +1,6 @@
 from django.urls import reverse, resolve
 from recipes import views
-from unittest import skip
+# from unittest import skip
 from .test_recipe_base import RecipeTestBase
 
 
@@ -19,11 +19,13 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(reverse('recipes:home'))
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
-    # @skip('Pulando testes de propósito para aprender sobre a decoração com skip WIP')
+    # @skip('Pulando testes de propósito com a decoração com skip WIP')
     def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
+        expected_return = '<h1>No recipes found here 🥲</h1>'
+
         response = self.client.get(reverse('recipes:home'))
         # Função decode converte bytes em uma string
-        self.assertIn('No recipes found', response.content.decode('utf-8'))
+        self.assertIn(expected_return, response.content.decode('utf-8'))
 
         # Preciso escrever mais coisas nesse teste
         # self.fail('Para que eu termine de escrever o teste')
@@ -38,6 +40,19 @@ class RecipeViewsTest(RecipeTestBase):
         content = response.content.decode('utf-8')  # testar o template
         self.assertIn('Recipe Title', content)
         self.assertEqual(len(response_context_recipes), 1)
+
+    def test_recipe_home_template_dont_load_recipes_not_published(self):
+        """Test recipe is_published False dont show"""
+        expected_return = '<h1>No recipes found here 🥲</h1>'
+
+        self.make_recipe(is_published=False)
+
+        response = self.client.get(reverse('recipes:home'))
+
+        self.assertIn(
+            expected_return,
+            response.content.decode('utf-8')
+        )
 
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(reverse('recipes:category', kwargs={'category_id': 1}))
