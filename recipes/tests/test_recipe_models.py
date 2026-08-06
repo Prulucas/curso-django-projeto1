@@ -1,5 +1,6 @@
-from .test_recipe_base import RecipeTestBase
 from django.core.exceptions import ValidationError
+from parameterized import parameterized
+from .test_recipe_base import RecipeTestBase
 
 
 class RecipeModelTest(RecipeTestBase):
@@ -11,5 +12,16 @@ class RecipeModelTest(RecipeTestBase):
         self.recipe.title = 'A' * 70
 
         with self.assertRaises(ValidationError):
-            # Aqui o Django valida se tem mais de 65 c
+            self.recipe.full_clean()
+
+    @parameterized.expand([
+        ('title', 65),
+        ('description', 165),
+        ('preparation_time_unity', 65),
+        ('servings_unity', 65),
+    ])
+    def test_recipe_fields_max_length(self, field, max_length):
+        # Usar + 1 para estourar o limite do campo
+        setattr(self.recipe, field, 'A' * (max_length + 1))
+        with self.assertRaises(ValidationError):
             self.recipe.full_clean()
