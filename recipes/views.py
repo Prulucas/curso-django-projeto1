@@ -31,3 +31,16 @@ def recipe(request, id):
         'recipe': recipe,
         'is_detail_page': True,
     })
+
+
+"""
+# enganar o django para duplicar receitas:
+# - from recipes.models import Recipe
+# - r = Recipe.objects.get(id=2)
+# - r
+# <Recipe: Outra Receita com HTML>
+# - for i in range(20): r.id = None; r.save()
+# ... 
+# >>> 
+# ao deixar um id com valor None, o django adiciona um id ao salvar
+"""
