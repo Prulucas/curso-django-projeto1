@@ -1,6 +1,7 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from utils.recipes.factory import make_recipe
 from recipes.models import Recipe
+
+# from utils.recipes.factory import make_recipe
 
 
 def home(request):
@@ -47,4 +48,4 @@ def recipe(request, id):
 
 
 def search(request):
-    ...
+    return render(request, 'recipes/pages/search.html')
