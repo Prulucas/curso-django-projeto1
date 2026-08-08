@@ -44,3 +44,7 @@ def recipe(request, id):
 # >>> 
 # ao deixar um id com valor None, o django adiciona um id ao salvar
 """
+
+
+def search(request):
+    ...
