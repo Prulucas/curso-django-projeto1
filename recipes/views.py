@@ -57,8 +57,11 @@ def search(request):
 
     recipes = Recipe.objects.filter(
         # para buscar o que contem o search_term
-        Q(title__icontains=search_term) |
-        Q(description__icontains=search_term),
+        Q(
+            Q(title__icontains=search_term) |
+            Q(description__icontains=search_term),
+        ),
+        is_published=True
         # o 'i' antes do contains é para ignorar variações de escrita
     ).order_by('-id')
 
