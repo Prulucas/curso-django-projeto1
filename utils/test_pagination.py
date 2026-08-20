@@ -1,8 +1,14 @@
 from unittest import TestCase
-from utils.pagination import make_pagination_range
+from utils.pagination import make_pagination_range, make_pagination
+from django.test import RequestFactory
 
 
 class PaginationTest(TestCase):
+    def setUp(self):
+        # Instancia o gerador de requisições
+        self.rf = RequestFactory()
+        self.queryset = [1, 2, 3, 4, 5, 6]
+
     def test_make_pagination_range_returns_a_pagination_range(self):  # noqa: E501
         pagination = make_pagination_range(
             page_range=list(range(1, 21)),
@@ -92,6 +98,31 @@ class PaginationTest(TestCase):
             current_page=21,
         )['pagination']
         self.assertEqual([17, 18, 19, 20], pagination)
+
+    def test_make_pagination_returns_page_two(self):
+        request = self.rf.get('/?page=2')
+
+        page_obj, pagination_range = make_pagination(
+            request,
+            self.queryset,
+            per_page=2
+        )
+
+        self.assertEqual(page_obj.number, 2)
+        self.assertEqual(len(page_obj.object_list), 2)
+        self.assertEqual(pagination_range['current_page'], 2)
+
+    def test_make_pagination_falls_back_to_page_one_if_page_is_invalid(self):
+        request = self.rf.get('/?page=abc')
+
+        page_obj, pagination_range = make_pagination(
+            request,
+            self.queryset,
+            per_page=2
+        )
+
+        self.assertEqual(page_obj.number, 1)
+        self.assertEqual(pagination_range['current_page'], 1)
 
 
 """ # noqa: E501
