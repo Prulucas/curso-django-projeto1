@@ -25,7 +25,7 @@ class AuthorRegisterFormUnitTest(TestCase):
         ('username', (
             'Obrigatório. 150 caracteres ou menos. '
             'Letras, números e @/./+/-/_ apenas.')),
-        ('email', 'The e-mail must be valid'),
+        ('email', 'The e-mail must be valid.'),
         ('password', (
             'Password must have at least one uppercase letter, '
             'one lowercase letter and one number. The length should be '
@@ -66,9 +66,17 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
 
     @parameterized.expand([
         ('username', 'This field must be not be empty'),
+        ('first_name', 'Write your first name'),
+        ('last_name', 'Write your last name'),
+        ('password', 'Password must not be empty'),
+        ('password2', 'Please, repeat your password'),
+        ('email', 'E-mail is required'),
     ])
     def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
         url = reverse('authors:create')
         response = self.client.post(url, data=self.form_data, follow=True)
+        # Pega conteudo renderizado na tela
         self.assertIn(msg, response.content.decode('utf-8'))
+        # Pega o form do contexto
+        self.assertIn(msg, response.context['form'].errors.get(field))
