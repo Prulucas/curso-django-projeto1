@@ -124,6 +124,14 @@ class PaginationTest(TestCase):
         self.assertEqual(page_obj.number, 1)
         self.assertEqual(pagination_range['current_page'], 1)
 
+    def test_make_pagination_uses_page_1_if_page_query_is_invalid(self):  # noqa: #E501
+        pagination = make_pagination_range(
+            page_range=list(range(1, 21)),
+            qty_pages=4,
+            current_page='1A',
+        )['pagination']
+        self.assertEqual([1, 2, 3, 4], pagination)
+
 
 """ # noqa: E501
 Test no teminal
