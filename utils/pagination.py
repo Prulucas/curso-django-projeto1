@@ -28,6 +28,12 @@ def make_pagination_range(
         dict: Um dicionário contendo o intervalo de paginação calculado e métricas
               auxiliares para a renderização na interface (templates).
     """
+
+    try:
+        current_page = int(current_page)
+    except (ValueError, TypeError):
+        current_page = 1
+
     # Calcula o meio do intervalo visível para manter a página atual centralizada
     middle_range = math.ceil(qty_pages / 2)
 
